@@ -31,6 +31,23 @@ pub fn build(b: *std.build.Builder) void {
 
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
+    
+    const exeC = b.addExecutable("c_hello", null);
+    exeC.addCSourceFile("src/test1.c", &[_][]const u8{
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    });
+    exeC.addCSourceFile("src/test.c", &[_][]const u8{
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    });
+    exeC.addIncludePath("./src");
+    exeC.linkSystemLibrary("c");
+    exeC.setTarget(target);
+    exeC.setBuildMode(mode);
+    exeC.install();
 
     const exe_tests = b.addTest("src/main.zig");
     exe_tests.setTarget(target);
